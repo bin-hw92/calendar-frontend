@@ -29,11 +29,11 @@
 }
 .todo-content > form > ul {
     margin: 50px auto auto;
-    padding: 0 2em;
+    padding: 0 2rem;
     list-style: none;
 }
 .todo-content > form > ul > li {
-    padding-bottom: 2em;
+    padding-bottom: 2rem;
 }
 .todo-title > input{
     width: 100%;
@@ -64,7 +64,7 @@
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 .todo-date > div > select{
-    margin-left: 1em;
+    margin-left: 1rem;
     max-width: 100px;
 }
 .todo-date > div:last-child {
@@ -77,8 +77,16 @@
     text-align: center;
 }
 .todo-bottom > button {
-    margin-right: 1em;
+    margin-right: 1rem;
 }
 .todo-bottom > button:last-child {
     margin-right: auto;
+}
+.todo-list {
+    margin: 50px auto;
+    padding: 0 2rem;
+}
+.todo-list-item {
+    display: flex;
+    list-style: none;
 }
