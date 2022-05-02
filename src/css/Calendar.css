@@ -1,0 +1,132 @@
+.calendar-form {
+    margin-top: 3em;
+    margin-bottom: 10em;
+}
+.calendar-header {
+    display: flex;
+    position: relative;
+    margin: 1.5em auto;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+.calendar-header > div {
+    margin: auto 1em;
+    font-size: 1.25em;
+}
+.left-arrow {
+    width: 30px;
+    height: 30px;
+    background: url('../images/arrow_icon.svg') no-repeat center;
+    background-size: 100% 100%;
+    background-color: #fff;
+    border: 1px solid #333;
+    border-radius: 3px;
+}
+.right-arrow {
+    width: 30px;
+    height: 30px;
+    background: url('../images/arrow_icon.svg') no-repeat center;
+    background-size: 100% 100%;
+    background-color: #fff;
+    border: 1px solid #333;
+    border-radius: 3px;
+    transform: rotate(0.5turn);
+}
+.calendar-list {
+    border: 1px solid #333;
+    border-bottom: 0;
+}
+.calendar-list > .list-title {
+    margin: auto;
+    padding: 0;
+    list-style: none;
+    display: flex;
+}
+.calendar-list > .list-title > li {
+    padding: 13px 10px;
+    width: 100%;
+    height: 50px;
+    font-weight: bold;
+    border-bottom: 1px solid #333;
+}
+.calendar-list > .list-item {
+    margin: auto;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+}
+.calendar-list > .list-item > li {
+    position: relative;
+    padding: 35px 1px 5px 1px;
+    width: calc(100% / 7);
+    min-height: 150px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+}
+.calendar-list > .list-item > li:nth-child(7n){
+    border-right: 0;
+}
+.calendar-num {
+    position: absolute;
+    top: 5px;
+    left: 10px;
+}
+.Sat {
+    color: royalblue;
+}
+.Sun {
+    color: salmon;
+}
+.now-date {
+    color: #fff;
+}
+.now-date::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    width: 26px;
+    height: 26px;
+    background-color: turquoise;
+    border-radius: 50%;
+    color: #fff;
+    z-index: -1;
+}
+.non-month {
+    position: relative;
+}
+.non-month::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(241, 241, 241, 0.6)
+}
+
+.on-calendar::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0px;
+    width: 100%;
+    height: calc(100% + 2px);
+    border-top: 2px solid turquoise;
+    border-left: 2px solid turquoise;
+    border-right: 2px solid turquoise;
+    border-bottom: 2px solid turquoise;
+    z-index: 2;
+}
+
+.todo-add-wrap {
+    position: absolute;
+    right: 0;
+}
+.todo-add-button {
+    padding: 3px 5px;
+    background-color: #fff;
+    border: 1px solid #333;
+    border-radius: 3px;
+}
