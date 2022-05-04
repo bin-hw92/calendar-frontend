@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import WriteView from "../../components/write/WriteView";
 import { changeModal, listCalendar } from "../../modules/calendar";
-import { changeField, changeSubField, initialize, writeCalendar } from "../../modules/write";
+import { changeField, changeSubField, initialize, updateCalendar, writeCalendar } from "../../modules/write";
 
 
 const dateChangeFormat = ({date}) => {
@@ -27,7 +27,7 @@ const checkDate = ({startDate, endDate}) => {
 
 const WriteViewContainer = () => {
     const dispatch = useDispatch();
-    const { form, title, body, startDay, startDate, endDay, endDate, calendar, calendarError} = useSelector(({ calendar, write }) => ({
+    const { form, title, body, startDay, startDate, endDay, endDate, calendar, calendarError, calendarId} = useSelector(({ calendar, write }) => ({
         form: calendar.form,
         title: write.title,
         body: write.body,
@@ -37,6 +37,7 @@ const WriteViewContainer = () => {
         endDate: write.endDate,
         calendar: write.calendar,
         calendarError: write.calendarError,
+        calendarId: write.calendarId,
     }));
     const hoursArray = [];
     const minArray = [];
@@ -119,10 +120,16 @@ const WriteViewContainer = () => {
             alert('시작일이 종료일보다 큽니다...');
             return;
         }
-        dispatch(writeCalendar({title, body, startDay, startDate, endDay, endDate, label}));
-    },[body, dispatch, endDate, endDay, startDate, startDay, title]);
+        if(!calendarId){ //수정
+            dispatch(writeCalendar({title, body, startDay, startDate, endDay, endDate, label}));
+        }else{//등록
+            dispatch(updateCalendar({calendarId, title, body, startDay, startDate, endDay, endDate, label}));
+        }
+    },[body, calendarId, dispatch, endDate, endDay, startDate, startDay, title]);
 
     const write = {
+        title,
+        body,
         startDay,
         startDate,
         endDay,
@@ -139,18 +146,31 @@ const WriteViewContainer = () => {
     
     // 성공 혹은 실패 시 할 작업
     useEffect(() => {
-        if(calendar){
-            const {viewYear, viewMonth} = form;
-            dispatch(listCalendar({viewYear, viewMonth}));
-            dispatch(changeModal(false));
+        if(!calendarId){
+            //추가
+            if(calendar){
+                const {viewYear, viewMonth} = form;
+                dispatch(listCalendar({viewYear, viewMonth}));
+                dispatch(changeModal(false));
+            }
+            if(calendarError){
+                console.log(calendarError);
+            } 
+        }else{
+            //수정
+            if(calendar){
+                const {viewYear, viewMonth} = form;
+                dispatch(listCalendar({viewYear, viewMonth}));
+                dispatch(changeModal({modalFlag:true, type:'view'}));//이전 팝업으로 백
+            }
+            if(calendarError){
+                console.log(calendarError);
+            }
         }
-        if(calendarError){
-            console.log(calendarError);
-        } 
-    },[calendar, calendarError, dispatch, form]);
+    },[calendar, calendarError, calendarId, dispatch, form]);
 
     return (
-       <WriteView onChange={onChange} write={write} onDateChange={onDateChange} onSubmit={onSubmit} onInputChange={onInputChange}/>
+       <WriteView onChange={onChange} write={write} onDateChange={onDateChange} onSubmit={onSubmit} onInputChange={onInputChange} calendarId={calendarId}/>
     )
 };
 

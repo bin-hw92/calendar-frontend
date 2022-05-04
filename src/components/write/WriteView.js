@@ -5,9 +5,9 @@ import "../../css/Todo.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/esm/locale";
 
-const WriteView = ({ write , onChange, onDateChange, onSubmit, onInputChange }) => {
+const WriteView = ({ write , onChange, onDateChange, onSubmit, onInputChange, calendarId }) => {
 
-    const { startDay, startDate, endDay, endDate, hoursArray, minArray} = write;
+    const { title, body, startDay, startDate, endDay, endDate, hoursArray, minArray} = write;
     const sDate = new Date(startDay);
     const eDate = new Date(endDay);
     
@@ -16,7 +16,7 @@ const WriteView = ({ write , onChange, onDateChange, onSubmit, onInputChange }) 
         <form onSubmit={onSubmit}>
             <ul>
                 <li className="todo-title">
-                    <Form.Control type="text" id="todo-title" name="title" placeholder="제목을 입력하세요" onChange={onInputChange}/>
+                    <Form.Control type="text" id="todo-title" name="title" placeholder="제목을 입력하세요" onChange={onInputChange} value={title}/>
                 </li>
                 <li className="todo-date">
                     <div>
@@ -51,12 +51,21 @@ const WriteView = ({ write , onChange, onDateChange, onSubmit, onInputChange }) 
                     </div>
                 </li>
                 <li className="todo-text">
-                    <Form.Control as="textarea" name="body" rows={5} onChange={onInputChange}/>
+                    <Form.Control as="textarea" name="body" rows={5} onChange={onInputChange} value={body}/>
                 </li>
             </ul>
             <div className="todo-bottom">
-                <Button variant="secondary" data-btn="N">취소</Button>
-                <Button variant="primary" data-btn="Y" onClick={onSubmit}>저장</Button>
+                {!calendarId? (
+                    <>
+                        <Button variant="secondary" data-btn="N">취소</Button>
+                        <Button variant="primary" data-btn="Y" onClick={onSubmit}>저장</Button>
+                    </>
+                ):(
+                    <>
+                        <Button variant="secondary" data-btn="B">취소</Button>
+                        <Button variant="primary" data-btn="Y" onClick={onSubmit}>수정</Button>
+                    </>
+                )}
             </div>
         </form>
         </>

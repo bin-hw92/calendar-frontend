@@ -5,12 +5,8 @@ export const writeCalendar = ({title, body, startDay, startDate, endDay, endDate
     return client.post('/api/calendar', {title, body, startDay, startDate, endDay, endDate, label});
 }
 //수정
-export const updatePost = ({ id, title, body, tags }) => {
-    return client.patch(`/api/posts/${id}`, {
-        title,
-        body,
-        tags
-    });
+export const updateCalendar = ({ id, title, body, startDay, startDate, endDay, endDate, label  }) => {
+    return client.patch(`/api/calendar/${id}`, {title, body, startDay, startDate, endDay, endDate, label});
 }
 
 //월별 할 일 목록
@@ -18,5 +14,16 @@ export const listCalendar = ({viewYear, viewMonth}) => {
     return client.get(`/api/calendar/?year=${viewYear}&month=${viewMonth}`);
 }
 
-//해당 일 목록
-export const readCalendar = checkDate => client.get(`/api/calendar/${checkDate}`);
+//해당 날짜 목록
+export const readCalendar = checkDate => client.get(`/api/calendar/view/${checkDate}`);
+
+//해당 할 일 삭제
+export const deleteCalendar = ({id, checkDate}) => {
+    client.delete(`/api/calendar/${id}`, {checkDate});
+}
+
+//수정화면
+export const editCalendar = ({ id }) => {
+    console.log(id);
+    return client.get(`/api/calendar/${id}`);
+}
