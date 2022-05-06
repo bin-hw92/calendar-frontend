@@ -9,9 +9,10 @@ import { changeModal } from "../../modules/calendar";
 const AskModalContainer = ({children}) => {
     const [childrenForm, setChildrenForm] = useState([]);
     const dispatch = useDispatch();
-    const {modalFlag, type} = useSelector(({ calendar }) => ({
+    const {modalFlag, type, calendarId} = useSelector(({ calendar, write }) => ({
         modalFlag: calendar.modalFlag,
         type: calendar.type,
+        calendarId: write.calendarId,
     }));
 
     const onClick = useCallback((e) => {
@@ -23,6 +24,7 @@ const AskModalContainer = ({children}) => {
             const btnValue = eTarget.dataset.btn;
             if(btnValue === 'N') dispatch(changeModal({modalFlag:false, type:null}));
             if(btnValue === 'Y') return
+            if(btnValue === 'B') dispatch(changeModal({modalFlag:true, type:'view'}));//이전 팝업으로 백
         }
     },[dispatch]);
     
@@ -35,7 +37,7 @@ const AskModalContainer = ({children}) => {
             return result;
         },[]);
     },[children, type]);
-
+    
     return (
         (modalFlag && <AskModal onClick={onClick} children={childrenForm}/>)
     )

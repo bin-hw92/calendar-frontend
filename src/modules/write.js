@@ -7,14 +7,12 @@ import produce from "immer";
 const INITIALIZE = 'write/INITIALIZE'; // 모든 내용 초기화
 const CHANGE_FIELD = 'write/CHANGE_FIELD'; // 특정 key 값 바꾸기
 const CHANGE_SUBFIELD = 'write/CHANGE_SUBFIELD'; // 특정 key 값 바꾸기
-
-//수정용
-const SET_ORIGINAL_POST = 'write/SET_ORIGINAL_POST';
-
 //글 등록 상태
 const [WRITE_CALENDAR, WRITE_CALENDAR_SUCCESS, WRITE_CALENDAR_FAILURE] = createRequestActionTypes('write/WRITE_CALENDAR'); //글 작성
 //수정
-const [UPDATE_POST, UPDATE_POST_SUCCESS, UPDATE_POST_FAILURE] = createRequestActionTypes('write/UPDATE_POST');
+const [UPDATE_CALENDAR, UPDATE_CALENDAR_SUCCESS, UPDATE_CALENDAR_FAILURE] = createRequestActionTypes('write/UPDATE_CALENDAR');
+//수정 화면용
+const [EDIT_CALENDAR, EDIT_CALENDAR_SUCCESS, EDIT_CALENDAR_FAILURE] = createRequestActionTypes('write/EDIT_CALDENDAR');
 
 export const initialize = createAction(INITIALIZE);
 export const changeField = createAction(CHANGE_FIELD, ({ key, value}) => ({
@@ -39,27 +37,34 @@ export const writeCalendar = createAction(WRITE_CALENDAR, ({ title, body, startD
     label,
 }));
 
-export const updatePost = createAction(UPDATE_POST, ({ id, title, body, tags}) => ({
-    id,
+export const updateCalendar = createAction(UPDATE_CALENDAR, ({ calendarId, title, body, startDay, startDate, endDay, endDate, label}) => ({
+    id:calendarId,
     title,
     body,
-    tags
+    startDay,
+    startDate,
+    endDay,
+    endDate,
+    label,
 }));
 
-export const setOrigialPost = createAction(SET_ORIGINAL_POST, post => post);
+export const editCalendar = createAction(EDIT_CALENDAR, id => id);
 
 //사가 생성
 const writeCalendarSaga = createRequestSaga(WRITE_CALENDAR, calendarAPI.writeCalendar);
-const updatePostSaga = createRequestSaga(UPDATE_POST, calendarAPI.updatePost);
+const updateCalendarSaga = createRequestSaga(UPDATE_CALENDAR, calendarAPI.updateCalendar);
+const editCalendarSaga = createRequestSaga(EDIT_CALENDAR, calendarAPI.editCalendar);
 
 export function* writeSaga() {
     yield takeLatest(WRITE_CALENDAR, writeCalendarSaga);
-    yield takeLatest(UPDATE_POST, updatePostSaga);
+    yield takeLatest(UPDATE_CALENDAR, updateCalendarSaga);
+    yield takeLatest(EDIT_CALENDAR, editCalendarSaga);
 }
 
 const nowDate = new Date();
 
 const initialState = {
+    id: '',
     title: '',
     body: '',
     startDay: `${nowDate.getFullYear()}.${("0" + (1 + nowDate.getMonth())).slice(-2)}.${("0" + nowDate.getDate()).slice(-2)}`,
@@ -84,6 +89,7 @@ const initialState = {
     },
     calendar: null,
     calendarError: null,
+    calendarId: null,
 };
 
 const write = handleActions(
@@ -113,20 +119,29 @@ const write = handleActions(
             ...state,
             calendarError
         }),
-        [SET_ORIGINAL_POST] : (state, { payload: post }) => ({
+        //수정 화면 성공
+        [EDIT_CALENDAR_SUCCESS] : (state, { payload: calendar }) => ({
             ...state,
-            title: post.title,
-            body: post.body,
-            tags: post.tags,
-            originalPostId: post._id,
+            title: calendar.title,
+            body: calendar.body,
+            startDay: calendar.startDay,
+            startDate: calendar.startDate,
+            endDay: calendar.endDay,
+            endDate: calendar.endDate,
+            label: calendar.label,
+            calendarId: calendar._id,
         }),
-        [UPDATE_POST_SUCCESS] : (state, { payload: post }) => ({
+        [EDIT_CALENDAR_FAILURE] : (state, { payload: calendarError }) => ({
             ...state,
-            post,
+            calendarError
         }),
-        [UPDATE_POST_FAILURE] : (state, { payload: postError}) => ({
+        [UPDATE_CALENDAR_SUCCESS] : (state, { payload: calendar }) => ({
             ...state,
-            postError
+            calendar,
+        }),
+        [UPDATE_CALENDAR_FAILURE] : (state, { payload: calendarError}) => ({
+            ...state,
+            calendarError
         }),
     },
     initialState,

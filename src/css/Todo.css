@@ -9,7 +9,8 @@
 }
 .todo-content {
     position: absolute;
-    top: calc(50% - 200px);
+    /* top: calc(50% - 100px); */
+    top: 100px;
     left: 50px;
     width: 90%;
     max-width: 1200px;
@@ -29,11 +30,11 @@
 }
 .todo-content > form > ul {
     margin: 50px auto auto;
-    padding: 0 2em;
+    padding: 0 2rem;
     list-style: none;
 }
 .todo-content > form > ul > li {
-    padding-bottom: 2em;
+    padding-bottom: 2rem;
 }
 .todo-title > input{
     width: 100%;
@@ -64,7 +65,7 @@
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 .todo-date > div > select{
-    margin-left: 1em;
+    margin-left: 1rem;
     max-width: 100px;
 }
 .todo-date > div:last-child {
@@ -77,8 +78,56 @@
     text-align: center;
 }
 .todo-bottom > button {
-    margin-right: 1em;
+    margin-right: 1rem;
 }
 .todo-bottom > button:last-child {
     margin-right: auto;
+}
+.todo-list {
+    margin: 50px auto;
+    padding: 0 2rem;
+}
+.todo-list-item {
+    display: flex;
+    list-style: none;
+    margin: auto auto 15px auto;
+    padding: 0;
+    align-items: center;
+}
+.todo-list-item > li {
+    margin-right: 10px;
+}
+.todo-list-item > .time {
+    width: 10%;
+    max-width: 100px;
+}
+.todo-list-item > .title {
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: #333;
+    width: 45%;
+    max-width: 515px;
+    cursor: pointer;
+}
+.todo-list-item > .body {
+    width: 45%;
+    max-width: 515px;
+    color: #555;
+}
+.todo-list-item > .delete-none,
+.todo-list-item > .delete {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+.todo-list-item > .delete::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    background: url('../images/delete-icon.svg');
+    background-size: 100% 100%;
 }
