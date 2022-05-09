@@ -5,8 +5,8 @@ import { takeLatest } from "redux-saga/effects";
 import produce from "immer";
 
 const INITIALIZE = 'write/INITIALIZE'; // 모든 내용 초기화
-const CHANGE_FIELD = 'write/CHANGE_FIELD'; // 특정 key 값 바꾸기
-const CHANGE_SUBFIELD = 'write/CHANGE_SUBFIELD'; // 특정 key 값 바꾸기
+const CHANGE_INPUT = 'write/CHANGE_INPUT'; // 특정 key 값 바꾸기
+
 //글 등록 상태
 const [WRITE_CALENDAR, WRITE_CALENDAR_SUCCESS, WRITE_CALENDAR_FAILURE] = createRequestActionTypes('write/WRITE_CALENDAR'); //글 작성
 //수정
@@ -15,16 +15,9 @@ const [UPDATE_CALENDAR, UPDATE_CALENDAR_SUCCESS, UPDATE_CALENDAR_FAILURE] = crea
 const [EDIT_CALENDAR, EDIT_CALENDAR_SUCCESS, EDIT_CALENDAR_FAILURE] = createRequestActionTypes('write/EDIT_CALDENDAR');
 
 export const initialize = createAction(INITIALIZE);
-export const changeField = createAction(CHANGE_FIELD, ({ key, value}) => ({
+export const changeInput = createAction(CHANGE_INPUT, ({ key, value}) => ({
     key,
     value
-}));
-export const changeSubField = createAction(
-    CHANGE_SUBFIELD,
-    ({ form, key, value }) => ({
-        form, // startDate, endDate
-        key, // year, month, min, hour, min
-        value, // 실제 바꾸려는 값
 }));
 
 export const writeCalendar = createAction(WRITE_CALENDAR, ({ title, body, startDay, startDate, endDay, endDate, label}) => ({
@@ -61,28 +54,10 @@ export function* writeSaga() {
     yield takeLatest(EDIT_CALENDAR, editCalendarSaga);
 }
 
-const nowDate = new Date();
-
 const initialState = {
     id: '',
     title: '',
     body: '',
-    startDay: `${nowDate.getFullYear()}.${("0" + (1 + nowDate.getMonth())).slice(-2)}.${("0" + nowDate.getDate()).slice(-2)}`,
-    startDate: {
-        year:  ''+nowDate.getFullYear(),
-        month: ("0" + (1 + nowDate.getMonth())).slice(-2),
-        date: ("0" + nowDate.getDate()).slice(-2),
-        hour: ''+new Date().getHours(),
-        min: ''+new Date().getMinutes(),
-    },
-    endDay: `${nowDate.getFullYear()}.${("0" + (1 + nowDate.getMonth())).slice(-2)}.${("0" + nowDate.getDate()).slice(-2)}`,
-    endDate: {
-        year: ''+nowDate.getFullYear(),
-        month: ("0" + (1 + nowDate.getMonth())).slice(-2),
-        date: ("0" + nowDate.getDate()).slice(-2),
-        hour: ''+(new Date().getHours()+1),
-        min: ''+new Date().getMinutes(),
-    },
     label: {
         style: '',
         text: '',
@@ -95,13 +70,9 @@ const initialState = {
 const write = handleActions(
     {
         [INITIALIZE] : state => initialState, // initialState를 넣으면 초기 상태로 바뀜
-        [CHANGE_FIELD] : (state, { payload: {key, value } }) => ({
+        [CHANGE_INPUT] : (state, { payload: {key, value } }) => ({
             ...state,
             [key] : value, //특정 key 값을 업데이트
-        }),
-        [CHANGE_SUBFIELD] : (state, { payload: {form, key, value} }) => 
-        produce(state, draft => {
-             draft[form][key] = value; // 예: state.startDate.year를 바꾼다.
         }),
         //글쓰기 상태
         [WRITE_CALENDAR] : state => ({

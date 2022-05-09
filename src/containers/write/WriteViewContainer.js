@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import WriteView from "../../components/write/WriteView";
-import { changeModal, listCalendar } from "../../modules/calendar";
-import { changeField, changeSubField, initialize, updateCalendar, writeCalendar } from "../../modules/write";
+import { changeModal, listCalendar,changeField, changeSubField } from "../../modules/calendar";
+import { changeInput, initialize, updateCalendar, writeCalendar } from "../../modules/write";
 
 
 const dateChangeFormat = ({date}) => {
@@ -31,10 +31,10 @@ const WriteViewContainer = () => {
         form: calendar.form,
         title: write.title,
         body: write.body,
-        startDay: write.startDay,
-        startDate: write.startDate,
-        endDay: write.endDay,
-        endDate: write.endDate,
+        startDay: calendar.write.startDay,
+        startDate: calendar.write.startDate,
+        endDay: calendar.write.endDay,
+        endDate: calendar.write.endDate,
         calendar: write.calendar,
         calendarError: write.calendarError,
         calendarId: write.calendarId,
@@ -102,7 +102,7 @@ const WriteViewContainer = () => {
     const onInputChange = e => {
         const { value, name } = e.target;
         dispatch(
-            changeField({
+            changeInput({
                 key: name,
                 value
             })
