@@ -5,9 +5,20 @@ import "../../css/Todo.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/esm/locale";
 
-const WriteView = ({ write , onChange, onDateChange, onSubmit, onInputChange, calendarId }) => {
+const LabelItem = ({labels, onStyleClick}) => {
+    return (
+        <>
+        {labels.map((label) => {
+            const $classStyle = label.flag? `label-on ${label.name}` : label.name;
+            return <div className={$classStyle} key={label.id} onClick={() => onStyleClick(label.id)}></div>
+        })}
+        </>
+    );
+};
 
-    const { title, body, startDay, startDate, endDay, endDate, hoursArray, minArray} = write;
+const WriteView = ({ write , onChange, onDateChange, onSubmit, onInputChange, calendarId, onStyleClick }) => {
+
+    const { title, body, startDay, startDate, endDay, endDate, hoursArray, minArray, labels, labelStyle, labelText} = write;
     const sDate = new Date(startDay);
     const eDate = new Date(endDay);
     
@@ -50,6 +61,15 @@ const WriteView = ({ write , onChange, onDateChange, onSubmit, onInputChange, ca
                         </Form.Select>
                     </div>
                 </li>
+                <li>
+                    <div className="label-wrap">
+                        <LabelItem labels={labels} onStyleClick={onStyleClick}/>
+                    </div>
+                    <div>
+                        <input type="hidden" name="label-style" value={labelStyle}/>
+                        <Form.Control type="text" name="label-text" placeholder="라벨명을 입력하세요" onChange={onInputChange} value={labelText}/>
+                    </div>
+                </li>
                 <li className="todo-text">
                     <Form.Control as="textarea" name="body" rows={5} onChange={onInputChange} value={body}/>
                 </li>
@@ -71,5 +91,6 @@ const WriteView = ({ write , onChange, onDateChange, onSubmit, onInputChange, ca
         </>
     )
 };
+
 
 export default WriteView;
