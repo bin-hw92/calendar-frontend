@@ -18,8 +18,8 @@ export const listCalendar = ({viewYear, viewMonth}) => {
 export const readCalendar = checkDate => client.get(`/api/calendar/view/${checkDate}`);
 
 //해당 할 일 삭제
-export const deleteCalendar = ({id, checkDate}) => {
-    client.delete(`/api/calendar/${id}`, {checkDate});
+export const deleteCalendar = ({id}) => {
+    client.delete(`/api/calendar/${id}`);
 }
 
 //수정화면

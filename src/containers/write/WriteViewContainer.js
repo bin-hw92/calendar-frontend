@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import WriteView from "../../components/write/WriteView";
-import { changeModal, listCalendar } from "../../modules/calendar";
-import { changeField, changeSubField, initialize, updateCalendar, writeCalendar } from "../../modules/write";
+import { changeModal, listCalendar,changeField, changeSubField } from "../../modules/calendar";
+import { changeInput, initialize, updateCalendar, writeCalendar } from "../../modules/write";
 
 
 const dateChangeFormat = ({date}) => {
@@ -27,17 +27,19 @@ const checkDate = ({startDate, endDate}) => {
 
 const WriteViewContainer = () => {
     const dispatch = useDispatch();
-    const { form, title, body, startDay, startDate, endDay, endDate, calendar, calendarError, calendarId} = useSelector(({ calendar, write }) => ({
+    const { form, title, body, startDay, startDate, endDay, endDate, calendar, calendarError, calendarId, labelStyle, labelText} = useSelector(({ calendar, write }) => ({
         form: calendar.form,
         title: write.title,
         body: write.body,
-        startDay: write.startDay,
-        startDate: write.startDate,
-        endDay: write.endDay,
-        endDate: write.endDate,
+        startDay: calendar.write.startDay,
+        startDate: calendar.write.startDate,
+        endDay: calendar.write.endDay,
+        endDate: calendar.write.endDate,
         calendar: write.calendar,
         calendarError: write.calendarError,
         calendarId: write.calendarId,
+        labelStyle: write.label.style,
+        labelText: write.label.text,
     }));
     const hoursArray = [];
     const minArray = [];
@@ -102,7 +104,7 @@ const WriteViewContainer = () => {
     const onInputChange = e => {
         const { value, name } = e.target;
         dispatch(
-            changeField({
+            changeInput({
                 key: name,
                 value
             })
@@ -126,18 +128,6 @@ const WriteViewContainer = () => {
             dispatch(updateCalendar({calendarId, title, body, startDay, startDate, endDay, endDate, label}));
         }
     },[body, calendarId, dispatch, endDate, endDay, startDate, startDay, title]);
-
-    const write = {
-        title,
-        body,
-        startDay,
-        startDate,
-        endDay,
-        endDate,
-        hoursArray: hoursArray,
-        minArray: minArray,
-    }
-
     useEffect(() => {
         return () => {
             dispatch(initialize());
@@ -168,9 +158,25 @@ const WriteViewContainer = () => {
             }
         }
     },[calendar, calendarError, calendarId, dispatch, form]);
+ 
+    const write = {
+        title,
+        body,
+        startDay,
+        startDate,
+        endDay,
+        endDate,
+        hoursArray: hoursArray,
+        minArray: minArray,
+        labels: labelStyle,
+        labelStyle: labelStyle.filter(({flag}) => flag),
+        labelText: labelText,
+    }
+    const onStyleClick = useCallback(id => {
+    },[]);
 
     return (
-       <WriteView onChange={onChange} write={write} onDateChange={onDateChange} onSubmit={onSubmit} onInputChange={onInputChange} calendarId={calendarId}/>
+       <WriteView onChange={onChange} write={write} onDateChange={onDateChange} onSubmit={onSubmit} onInputChange={onInputChange} calendarId={calendarId} onStyleClick={onStyleClick}/>
     )
 };
 

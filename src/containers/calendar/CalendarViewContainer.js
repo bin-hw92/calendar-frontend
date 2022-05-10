@@ -1,10 +1,13 @@
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CalendarView from "../../components/calendar/CalendarView";
-import { changeModal } from "../../modules/calendar";
+import { changeModal, listCalendar } from "../../modules/calendar";
 import { deleteCalendar, readCalendar } from "../../modules/view";
 import { editCalendar } from "../../modules/write";
 
+function timeout(delay) { 
+    return new Promise( res => setTimeout(res, delay) ); 
+}
 
 const CalendarViewContainer = () => {
     const dispatch = useDispatch();
@@ -15,13 +18,13 @@ const CalendarViewContainer = () => {
         error: view.error,
         user: user.user,
     }));
-
+    console.log(deleteFlag);
     const {viewYear, viewMonth, viewDate} = form;
 
     useEffect(() => {
         console.log(deleteFlag);
         dispatch(readCalendar(`${viewYear}.${viewMonth}.${viewDate}`));
-    },[dispatch, viewDate, viewMonth, viewYear, deleteFlag]);
+    },[deleteFlag, dispatch, viewDate, viewMonth, viewYear]);
 
     const onClick = useCallback(async (e, id) => {
         const eClassName = e.target.className;
@@ -32,7 +35,10 @@ const CalendarViewContainer = () => {
         if(eClassName === 'delete') {
             if (window.confirm("정말 삭제합니까?")) {
                 const checkDate = `${viewYear}.${viewMonth}.${viewDate}`;
-                await dispatch(deleteCalendar({id, checkDate}));
+                await dispatch(deleteCalendar({id}));
+                await timeout(300); //0.3초 딜레이
+                await dispatch(readCalendar(checkDate));
+                await dispatch(listCalendar({viewYear, viewMonth}));
               }
         }
     },[dispatch, viewDate, viewMonth, viewYear]);
