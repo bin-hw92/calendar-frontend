@@ -1,3 +1,6 @@
+# 일반 달력을 통한 할 일 추가 및 공유 사이트 개발 중
+- 자세한 내용은 백엔드 프로젝트 참조 -> https://github.com/bin-hw92/calendar-backend
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
