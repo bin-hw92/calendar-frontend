@@ -17,7 +17,7 @@ const CalendarHeaderContainer = () => {
         if(idx === -1){ //이전
             if(viewMonth === '01'){
                 dispatch(changeCalendar({
-                    viewYear: viewYear - 1,
+                    viewYear: ''+ (parseInt(viewYear) - 1),
                     viewMonth: '12',
                     viewDate: '01',
                 }));
@@ -32,7 +32,7 @@ const CalendarHeaderContainer = () => {
         if(idx === 1){ //다음
             if(viewMonth === '12'){
                 dispatch(changeCalendar({
-                    viewYear: viewYear + 1,
+                    viewYear: ''+ (parseInt(viewYear) + 1),
                     viewMonth: '01',
                     viewDate: '01',
                 }));
@@ -43,6 +43,14 @@ const CalendarHeaderContainer = () => {
                     viewDate: '01',
                 }));
             }
+        }
+        if(idx === 0){
+            const nowDate = new Date();
+            dispatch(changeCalendar({
+                viewYear: ''+nowDate.getFullYear(),
+                viewMonth: ('0' + (1 + nowDate.getMonth())).slice(-2),
+                viewDate: ('0' + nowDate.getDate()).slice(-2),
+            }));
         }
         
     },[dispatch, viewMonth, viewYear]);

@@ -17,6 +17,7 @@ const CalendarHeader = ({user, viewYear, viewMonth, onClick, onModalClick}) => {
       <button className="left-arrow" onClick={() => onClick(-1)}></button>
         <div>{name}</div>
       <button className="right-arrow" onClick={() => onClick(1)}></button>
+      <button className="today-button" onClick={() => onClick(0)}>오늘</button>
       {user &&(
       <div className="todo-add-wrap">
         <Button onClick={onModalClick}>일정 추가</Button>

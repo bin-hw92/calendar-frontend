@@ -9,8 +9,10 @@ const CHANGE_MODAL = 'calendar/CHANGE_MODAL'; //할 일 추가 팝업
 const INITIALIZE = 'calendar/INITIALIZE';
 const CHANGE_FIELD = 'write/CHANGE_FIELD'; // 특정 key 값 바꾸기
 const CHANGE_SUBFIELD = 'write/CHANGE_SUBFIELD'; // 특정 key 값 바꾸기
+const CHANGE_MONTHCALENDAR = 'calendar/CHANGE_MONTHCALENDAR'; // 달력 시작과 끝
 
-const [LIST_CALDENDAR, LIST_CALDENDAR_SUCCESS, LIST_CALDENDAR_FAILURE ] = createRequestActionTypes('calendar/LIST_CALDENDAR');
+const [LIST_CALENDAR, LIST_CALENDAR_SUCCESS, LIST_CALENDAR_FAILURE ] = createRequestActionTypes('calendar/LIST_CALENDAR');
+const [LIST_HOLIDAY, LIST_HOLIDAY_SUCCESS, LIST_HOLIDAY_FAILURE ] = createRequestActionTypes('calendar/LIST_HOLIDAY');
 
 export const initialize = createAction(INITIALIZE);
 export const changeCalendar = createAction(
@@ -19,6 +21,13 @@ export const changeCalendar = createAction(
         viewYear,
         viewMonth,
         viewDate
+    }),
+);
+export const changeCalendarMonth = createAction(
+    CHANGE_MONTHCALENDAR,
+    ({ startMonth, endMonth }) => ({
+        startMonth,
+        endMonth
     }),
 );
 export const changeModal = createAction(CHANGE_MODAL, 
@@ -40,21 +49,30 @@ export const changeSubField = createAction(
 }));
 
 //이거 액션 실행되고, 사가를 통해서 api 호출 진행
-export const listCalendar = createAction(LIST_CALDENDAR, ({ viewYear, viewMonth }) => ({
-    viewYear,
-    viewMonth,
+export const listCalendar = createAction(LIST_CALENDAR, ({ startMonth, endMonth }) => ({
+    startMonth,
+    endMonth,
 }));
 
-const listCalendarSage = createRequestSaga(LIST_CALDENDAR, calendarApi.listCalendar);
+//이거 액션 실행되고, 사가를 통해서 api 호출 진행
+export const listHoliday = createAction(LIST_HOLIDAY, ({ viewYear }) => ({
+    viewYear
+}));
+
+const listCalendarSage = createRequestSaga(LIST_CALENDAR, calendarApi.listCalendar);
+const listHolidaySage = createRequestSaga(LIST_HOLIDAY, calendarApi.listHoliday);
 
 export function* calendarListSaga() {
-    yield takeLatest(LIST_CALDENDAR, listCalendarSage);
+    yield takeLatest(LIST_CALENDAR, listCalendarSage);
+    yield takeLatest(LIST_HOLIDAY, listHolidaySage);
 }
 
 const nowDate = new Date();
 const initialState = {
+    startMonth: '',
+    endMonth: '',
     form: {
-        viewYear: nowDate.getFullYear(),
+        viewYear: ''+nowDate.getFullYear(),
         viewMonth: ("0" + (1 + nowDate.getMonth())).slice(-2),
         viewDate: ("0" + nowDate.getDate()).slice(-2),
     },
@@ -76,7 +94,8 @@ const initialState = {
             min: ''+new Date().getMinutes(),
         },
     },
-    calendarList: [],
+    calendarList: null,
+    holidayList: null,
     error: null,
     modalFlag: false,
     type: null,
@@ -89,24 +108,37 @@ const calendar = handleActions(
             ...state,
             form: calendar
        }),
+       [CHANGE_MONTHCALENDAR] : (state, { payload: {startMonth, endMonth} }) => ({
+            ...state,
+            startMonth,
+            endMonth
+        }),
        [CHANGE_MODAL] : (state, { payload: {modalFlag, type} }) => ({
             ...state,
             modalFlag,
             type
         }),
-        [CHANGE_FIELD] : (state, { payload: {form, key, value} }) => 
+        [CHANGE_FIELD] : (state, { payload: {key, value} }) => 
         produce(state, draft => {
-                draft['write'][key] = value; // 예: state.startDate.year를 바꾼다.
+                draft['write'][key] = value;
         }),
         [CHANGE_SUBFIELD] : (state, { payload: {form, key, value} }) => 
         produce(state, draft => {
-             draft['write'][form][key] = value; // 예: state.startDate.year를 바꾼다.
+             draft['write'][form][key] = value;
         }),
-        [LIST_CALDENDAR_SUCCESS] : (state, { payload: calendarList }) => ({
+        [LIST_CALENDAR_SUCCESS] : (state, { payload: calendarList }) => ({
             ...state,
             calendarList,
         }),
-        [LIST_CALDENDAR_FAILURE] : (state, { payload: error }) => ({
+        [LIST_CALENDAR_FAILURE] : (state, { payload: error }) => ({
+            ...state,
+            error
+        }),
+        [LIST_HOLIDAY_SUCCESS] : (state, { payload: holidayList }) => ({
+            ...state,
+            holidayList,
+        }),
+        [LIST_HOLIDAY_FAILURE] : (state, { payload: error }) => ({
             ...state,
             error
         }),

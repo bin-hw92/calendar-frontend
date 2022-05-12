@@ -1,50 +1,52 @@
+import styled from 'styled-components';
 import '../../css/Calendar.css';
-import styled from "styled-components";
-import palette from '../../lib/styles/palette';
+import Loading from '../common/Loading';
+import Responsive from '../common/Responsive';
 
 //현재 날짜 넣기
 const nowYear = new Date().getFullYear();
 const nowMonth = new Date().getMonth()+1;
 const nowDay = new Date().getDate();
 
-const TodoBlock = styled.div`
-    font-size: 0.75rem;
-    margin-top: 3px;
-    padding: 2px 5px;
-    border-radius: 5px;
-    color: ${palette.gray[8]};
+const CalendarListBlock = styled(Responsive)`
+    margin-top: 4rem;
 `;
 
-const CalendarItem = ({ item, idx, viewDate, onClick, loading, calendarList }) => {
-    const {date, fullDate, isMonth} = item;
+
+const CalendarItem = ({ item, idx, viewDate, onClick }) => {
+    const {date, fullDate, isMonth, todoList, holiday} = item;
     const thisDate = fullDate.split('.');
-    const classWeek = idx % 7 === 0? 'Sun calendar-num' : (idx+1) % 7 === 0? 'Sat calendar-num' : 'calendar-num';
+
+    //클래스명 정하기
+    const classWeek = idx % 7 === 0? 'Sun calendar-num' : (idx+1) % 7 === 0? 'Sat calendar-num' : holiday? 'Holiday calendar-num' : 'calendar-num';
     const classMonth = !isMonth? 'non-month' : parseInt(date) === parseInt(viewDate)? 'on-calendar' : '' //선택된 날자 찾기
     const classNow =  nowYear === parseInt(thisDate[0]) && nowMonth === parseInt(thisDate[1]) && parseInt(date) === nowDay? 'now-date' : '';
-
-    const todoList = calendarList.filter(({startDate, endDate}) => 
-        (parseInt(startDate.year) === parseInt(thisDate[0]) && parseInt(startDate.month) === parseInt(thisDate[1]) && parseInt(startDate.date) === parseInt(date)) 
-        || (parseInt(endDate.year) === parseInt(thisDate[0]) && parseInt(endDate.month) === parseInt(thisDate[1]) && parseInt(endDate.date) === parseInt(date)));
 
     return (
         <li className={classMonth} date-full={fullDate} onClick={() => onClick(fullDate)}>
             <div className={`${classNow} ${classWeek}`}>{date}</div>
-            <>
-                {!loading && (
-                    todoList.map(({_id, title, label}) => {
-                        const labelStyle = {
-                            background : `${label.style}`,
-                        }
-                        return <TodoBlock key={_id} style={labelStyle} >{title}</TodoBlock>
-                    })
-                )}
-            </>
+            <div className='calendar-todo-absolute'>
+                {todoList.map(({_id, title, label, startflag, endflag, daysize}, idx) => {
+                    const labelStyle = {background : `${label.style}`};
+                    const itemStyle =  daysize === 0 ? {overflow: 'hidden'} : {};
+                    const labelClass = 'calendar-todo-item-background'.concat(startflag?' start-border-item':'').concat(endflag?' end-border-item':'');
+                    return (idx < 5 && <div className='calendar-todo-item' key={_id} style={itemStyle}>
+                        <div className={labelClass} style={labelStyle}></div>
+                            {startflag && title}
+                            </div>)
+                })}
+            </div>
         </li>
     );
 };
 
-const CalendarList = ({dates, viewDate, loading, error, calendarList, onClick}) => {
-
+const CalendarList = ({loading, dates, viewDate, error, onClick}) => {
+    if(error){
+        if(error.response && error.response.status === 404){
+            return <CalendarListBlock>파일이 존재하지 않습니다.</CalendarListBlock>
+        }
+    }
+    
     return (
         <div className="calendar-list">
             <ul className="list-title">
@@ -58,9 +60,10 @@ const CalendarList = ({dates, viewDate, loading, error, calendarList, onClick}) 
             </ul>
             <ul className="list-item">
                 {dates.map((date, idx) => (
-                 <CalendarItem key={date.fullDate} item={date} idx={idx} viewDate={viewDate} onClick={onClick} loading={loading} calendarList={calendarList}/>
+                    <CalendarItem key={date.fullDate} item={date} idx={idx} viewDate={viewDate} onClick={onClick} />
                 ))}
-            </ul>            
+            </ul>
+            {loading && <Loading />}
         </div>
     )
 }
