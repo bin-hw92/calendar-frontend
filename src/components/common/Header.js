@@ -49,7 +49,7 @@ const Header = ({user, onLogout}) => {
         <>
             <HeaderBlock>
                 <Wrapper>
-                    <Link to="/" className="logo">LOGO</Link>
+                    <Link to="/" className="logo">할 일 달력</Link>
                     {user ? (
                         <div className="right">
                             <UserInfo>{user.username}</UserInfo>

@@ -44,6 +44,14 @@ const CalendarHeaderContainer = () => {
                 }));
             }
         }
+        if(idx === 0){
+            const nowDate = new Date();
+            dispatch(changeCalendar({
+                viewYear: ''+nowDate.getFullYear(),
+                viewMonth: ('0' + (1 + nowDate.getMonth())).slice(-2),
+                viewDate: ('0' + nowDate.getDate()).slice(-2),
+            }));
+        }
         
     },[dispatch, viewMonth, viewYear]);
 
