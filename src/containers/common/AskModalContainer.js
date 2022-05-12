@@ -36,11 +36,8 @@ const AskModalContainer = ({children}) => {
     //상황에 따라 children 보여주는 걸 다르게 하기
 
     useEffect(() => {
-        children.reduce((result, child) => {
-            if(type === 'wrtie' && child.type.name === 'WriteViewContainer') setChildrenForm(child);
-            if(type === 'view' && child.type.name === 'CalendarViewContainer') setChildrenForm(child);
-            return result;
-        },[]);
+        if(type === 'wrtie') setChildrenForm(children[0]);
+        if(type === 'view') setChildrenForm(children[1]);
     },[children, type]);
 
     return (
