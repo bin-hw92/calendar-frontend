@@ -1,18 +1,18 @@
 .calendar-form {
-    margin-top: 3em;
-    margin-bottom: 10em;
+    margin-top: 3rem;
+    margin-bottom: 10rem;
 }
 .calendar-header {
     display: flex;
     position: relative;
-    margin: 1.5em auto;
+    margin: 1.5rem auto;
     text-align: center;
     justify-content: center;
     align-items: center;
 }
 .calendar-header > div {
-    margin: auto 1em;
-    font-size: 1.25em;
+    margin: auto 1rem;
+    font-size: 1.25rem;
 }
 .left-arrow {
     width: 30px;
@@ -124,7 +124,7 @@
 
 .todo-add-wrap {
     position: absolute;
-    right: 0;
+    right: -1rem;
 }
 .todo-add-button {
     padding: 3px 5px;
@@ -202,4 +202,46 @@
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+@media screen and (max-width: 768px) {
+    .calendar-list > .list-title > li {
+        padding: 10px 10px;
+        height: 40px;
+    }
+    .calendar-list > .list-item > li {
+        padding: 30px 1px 5px 1px;
+        min-height: 150px;
+    }
+    .calendar-todo-item {
+        height: 20px;
+    }
+    .calendar-num {
+        top: 4px;
+        left: 8px;
+    }
+    .now-date::before {
+        width: 24px;
+        height: 24px;
+    }
+}
+@media screen and (max-width: 480px) {
+    .calendar-header {
+        justify-content: flex-start;
+    }
+    .calendar-list > .list-title > li {
+        padding: 8px 10px;
+        height: 33px;
+    }
+    .calendar-list > .list-item > li {
+        padding: 28px 1px 5px 1px;
+        min-height: 148px;
+    }
+    .calendar-todo-item {
+        height: 20px;
+    }
+    .now-date::before {
+        width: 21px;
+        height: 21px;
+    }
 }

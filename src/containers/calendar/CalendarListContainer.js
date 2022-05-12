@@ -61,7 +61,6 @@ const CalendarListContainer = () => {
     },[calendarList, dispatch]);
 
     if(calendarList === null && holidayList === null) return;
-
     return (
         <CalendarList
             loading={loading}
@@ -69,7 +68,6 @@ const CalendarListContainer = () => {
             viewDate={viewDate}
             error={error}
             onClick={onClick}
-            holidayList={holidayList}
         />
     )
 };

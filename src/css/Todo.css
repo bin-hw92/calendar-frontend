@@ -11,7 +11,7 @@
     position: absolute;
     /* top: calc(50% - 100px); */
     top: 100px;
-    left: 50px;
+    left: calc(50% - 600px);
     width: 90%;
     max-width: 1200px;
     background-color: #fff;
@@ -191,4 +191,37 @@
 }
 .label-wrap > .label-on {
     border: 2px solid #000000;
+}
+@media screen and (max-width: 1200px) {
+    .todo-content {
+        left: 5%;
+    }
+    .todo-date > div {
+        margin-right: 20px;
+        width: calc(50% - 10px);
+    }
+    .todo-date > div > select {
+        width: 41%;
+    }
+}
+@media screen and (max-width: 768px) {
+    .todo-content {
+        left: 5%;
+    }
+    .todo-date {
+        flex-wrap: wrap;
+    }
+    .todo-date > div {
+        margin-right: 0px;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+}
+@media screen and (max-width: 480px) {
+    .todo-content {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
 }

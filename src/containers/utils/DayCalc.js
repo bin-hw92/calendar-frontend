@@ -124,5 +124,15 @@ export const DayStartEnd = ({viewYear, viewMonth}) => {
            });
        }
 
-       return {'startMonth': thisDates[0].fullDate, 'endMonth': thisDates[thisDates.length-1].fullDate};
+       const startDates = thisDates[0].fullDate.split('.');
+       let startMonth = '';
+       if(startDates[1] === '01') startMonth = (parseInt(startDates[0])-1) + '.12';
+       else startMonth = (parseInt(startDates[1])-1) < 10? `${startDates[0]}.0${(parseInt(startDates[1])-1)}` :  `${startDates[0]}.${(parseInt(startDates[1])-1)}`;
+
+       const endDates = thisDates[thisDates.length-1].fullDate.split('.');
+       let endMonth = '';
+       if(endDates[1] === '12') endMonth = (parseInt(endDates[0])+1) + '.01';
+       else endMonth = (parseInt(endDates[1])+1) < 10? `${endDates[0]}.0${(parseInt(endDates[1])+1)}` :  `${endDates[0]}.${(parseInt(endDates[1])+1)}`;
+
+       return {startMonth, endMonth};
 }

@@ -40,7 +40,7 @@ const CalendarItem = ({ item, idx, viewDate, onClick }) => {
     );
 };
 
-const CalendarList = ({loading, dates, viewDate, error, onClick, holidayList}) => {
+const CalendarList = ({loading, dates, viewDate, error, onClick}) => {
     if(error){
         if(error.response && error.response.status === 404){
             return <CalendarListBlock>파일이 존재하지 않습니다.</CalendarListBlock>
@@ -63,7 +63,7 @@ const CalendarList = ({loading, dates, viewDate, error, onClick, holidayList}) =
                     <CalendarItem key={date.fullDate} item={date} idx={idx} viewDate={viewDate} onClick={onClick} />
                 ))}
             </ul>
-            {loading && !holidayList.length && <Loading />}
+            {loading && <Loading />}
         </div>
     )
 }
