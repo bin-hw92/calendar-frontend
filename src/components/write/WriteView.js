@@ -5,11 +5,11 @@ import "../../css/Todo.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/esm/locale";
 
-const LabelItem = ({labels, onStyleClick}) => {
+const LabelItem = ({labels, labelStyle, onStyleClick }) => {
     return (
         <>
         {labels.map((label) => {
-            const $classStyle = label.flag? `label-on ${label.name}` : label.name;
+            const $classStyle = label.color === labelStyle? `label-on ${label.name}` : label.name;
             return <div className={$classStyle} key={label.id} onClick={() => onStyleClick(label.id)}></div>
         })}
         </>
@@ -63,10 +63,10 @@ const WriteView = ({ write , onChange, onDateChange, onSubmit, onInputChange, ca
                 </li>
                 <li>
                     <div className="label-wrap">
-                        <LabelItem labels={labels} onStyleClick={onStyleClick}/>
+                        <LabelItem labels={labels} labelStyle={labelStyle} onStyleClick={onStyleClick} />
                     </div>
                     <div>
-                        <input type="hidden" name="label-style" value={labelStyle}/>
+                        <input type="hidden" name="label-style" value={labelStyle} />
                         <Form.Control type="text" name="label-text" placeholder="라벨명을 입력하세요" onChange={onInputChange} value={labelText}/>
                     </div>
                 </li>

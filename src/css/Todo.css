@@ -84,30 +84,61 @@
     margin-right: auto;
 }
 .todo-list {
-    margin: 50px auto;
+    position: relative;
+    margin: 30px auto;
     padding: 0 2rem;
+    min-height: 180px;
+}
+.todo-top-title {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    font-size: 1.25rem;
+    font-weight: bold;
+    border-bottom: 1px solid #555;
 }
 .todo-list-item {
     display: flex;
     list-style: none;
-    margin: auto auto 15px auto;
-    padding: 0;
-    align-items: center;
+    margin: auto;
+    padding: 0 0 25px 0;
+    align-items: flex-start;
 }
 .todo-list-item > li {
     margin-right: 10px;
 }
-.todo-list-item > .time {
+.todo-list-item > .label {
+    position: relative;
+    padding-left: 5px;
     width: 10%;
     max-width: 100px;
+    font-size: 0.85rem;
+    line-height: 1.2;
+    word-break: break-all;
+}
+.todo-list-item > .label > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
 }
 .todo-list-item > .title {
-    font-size: 1.125rem;
-    font-weight: bold;
-    color: #333;
+    position: relative;
     width: 45%;
     max-width: 515px;
     cursor: pointer;
+}
+.todo-list-item > .title > .title-font {
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: #333;
+}
+.todo-list-item > .title > .time {
+    position: absolute;
+    left: 0;
+    bottom: -17px;
+    font-size: 0.75rem;
+    color: #777;
 }
 .todo-list-item > .body {
     width: 45%;
@@ -144,19 +175,19 @@
     cursor: pointer;
 }
 .label-wrap > .red {
-    background: rgb(249, 79, 79);
+    background: #f77878;
 }
 .label-wrap > .blue {
-    background: rgb(79, 79, 247);
+    background: #9b9bfb;
 }
 .label-wrap > .green {
-    background: rgb(66, 243, 66);
+    background: #86f586;
 }
-.label-wrap > .yellow {
-    background: rgb(241, 241, 76);
+.label-wrap > .orange {
+    background: #ffc107;
 }
 .label-wrap > .gray {
-    background: rgb(242, 242, 242);
+    background: #dbdbdb;
 }
 .label-wrap > .label-on {
     border: 2px solid #000000;

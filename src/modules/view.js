@@ -3,21 +3,21 @@ import createRequestSaga, { createRequestActionTypes } from "../lib/createReques
 import * as calendarAPI from "../lib/api/calendar";
 import { takeLatest } from "redux-saga/effects";
 
-const [READ_CALDENDAR, READ_CALDENDAR_SUCCESS, READ_CALDENDAR_FAILURE] = createRequestActionTypes('view/READ_CALDENDAR'); 
-const UNLOAD_CALDENDAR = 'view/UNLOAD_CALDENDAR'; // 게시판 페이지에서 벗어날 때 데이터 비우기
-const [DELETE_CALDENDAR, DELETE_CALDENDAR_SUCCESS, DELETE_CALDENDAR_FAILURE] = createRequestActionTypes('view/DELETE_CALDENDAR'); 
+const [READ_CALENDAR, READ_CALENDAR_SUCCESS, READ_CALENDAR_FAILURE] = createRequestActionTypes('view/READ_CALENDAR'); 
+const UNLOAD_CALENDAR = 'view/UNLOAD_CALENDAR'; // 게시판 페이지에서 벗어날 때 데이터 비우기
+const [DELETE_CALENDAR, DELETE_CALENDAR_SUCCESS, DELETE_CALENDAR_FAILURE] = createRequestActionTypes('view/DELETE_CALENDAR'); 
 
-export const readCalendar = createAction(READ_CALDENDAR, checkDate => checkDate);
-export const unloadCalendar = createAction(UNLOAD_CALDENDAR);
+export const readCalendar = createAction(READ_CALENDAR, checkDate => checkDate);
+export const unloadCalendar = createAction(UNLOAD_CALENDAR);
 
-export const deleteCalendar = createAction(DELETE_CALDENDAR, ({id, checkDate}) => ({id, checkDate}));
+export const deleteCalendar = createAction(DELETE_CALENDAR, ({id, checkDate}) => ({id, checkDate}));
 
-const readCalendarSaga = createRequestSaga(READ_CALDENDAR, calendarAPI.readCalendar);
-const deleteCalendarSaga = createRequestSaga(READ_CALDENDAR, calendarAPI.deleteCalendar);
+const readCalendarSaga = createRequestSaga(READ_CALENDAR, calendarAPI.readCalendar);
+const deleteCalendarSaga = createRequestSaga(READ_CALENDAR, calendarAPI.deleteCalendar);
 
 export function* calendarReadSaga() {
-    yield takeLatest(READ_CALDENDAR, readCalendarSaga);
-    yield takeLatest(DELETE_CALDENDAR, deleteCalendarSaga);
+    yield takeLatest(READ_CALENDAR, readCalendarSaga);
+    yield takeLatest(DELETE_CALENDAR, deleteCalendarSaga);
 }
 
 const initialState = {
@@ -28,20 +28,20 @@ const initialState = {
 
 const calendar = handleActions(
     {
-        [READ_CALDENDAR_SUCCESS] : (state, { payload: calendar }) => ({
+        [READ_CALENDAR_SUCCESS] : (state, { payload: calendar }) => ({
             ...state,
             calendar
         }),
-        [READ_CALDENDAR_FAILURE] : (state, { payload: error }) => ({
+        [READ_CALENDAR_FAILURE] : (state, { payload: error }) => ({
             ...state,
             error
         }),
-        [UNLOAD_CALDENDAR] : () => initialState,
-        [DELETE_CALDENDAR_SUCCESS] : (state) => ({
+        [UNLOAD_CALENDAR] : () => initialState,
+        [DELETE_CALENDAR_SUCCESS] : (state) => ({
             ...state,
             deleteFlag: true,
         }),
-        [DELETE_CALDENDAR_FAILURE] : (state, { payload: error }) => ({
+        [DELETE_CALENDAR_FAILURE] : (state, { payload: error }) => ({
             ...state,
             error
         }),

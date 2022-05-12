@@ -10,8 +10,8 @@ export const updateCalendar = ({ id, title, body, startDay, startDate, endDay, e
 }
 
 //월별 할 일 목록
-export const listCalendar = ({viewYear, viewMonth}) => {
-    return client.get(`/api/calendar/?year=${viewYear}&month=${viewMonth}`);
+export const listCalendar = ({startMonth, endMonth}) => {
+    return client.get(`/api/calendar/?start=${startMonth}&end=${endMonth}`);
 }
 
 //해당 날짜 목록
@@ -24,6 +24,11 @@ export const deleteCalendar = ({id}) => {
 
 //수정화면
 export const editCalendar = ({ id }) => {
-    console.log(id);
     return client.get(`/api/calendar/${id}`);
+}
+
+
+//공휴일 정보
+export const listHoliday = ({viewYear}) => {
+    return client.get(`/api/holiday/?year=${viewYear}`);
 }

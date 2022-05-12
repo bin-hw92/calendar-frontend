@@ -23,7 +23,7 @@ const loading = handleActions(
     {
         [START_LOADING] : (state, action) => ({
             ...state,
-            [action.playload] : true,
+            [action.payload] : true,
         }),
         [FINISH_LOADING] : (state, action) => ({
             ...state,

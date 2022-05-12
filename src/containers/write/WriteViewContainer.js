@@ -1,10 +1,10 @@
+import { useState } from "react";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import WriteView from "../../components/write/WriteView";
 import { changeModal, listCalendar,changeField, changeSubField } from "../../modules/calendar";
-import { changeInput, initialize, updateCalendar, writeCalendar } from "../../modules/write";
-
+import { initialize, updateCalendar, writeCalendar } from "../../modules/write";
 
 const dateChangeFormat = ({date}) => {
     const nDate = new Date(date);
@@ -16,31 +16,64 @@ const dateChangeFormat = ({date}) => {
 }
 
 const checkDate = ({startDate, endDate}) => {
-    if(parseInt(startDate.year)  > parseInt(endDate.year)) return false;
-    if(parseInt(startDate.month) > parseInt(endDate.month)) return false;
-    if(parseInt(startDate.date) > parseInt(endDate.date)) return false;
-    if(parseInt(startDate.hour) > parseInt(endDate.hour)) return false;
-    if(parseInt(startDate.min) > parseInt(endDate.min)) return false;
+    let sDate = new Date(startDate.year, startDate.month, startDate.date, startDate.hour, startDate.min); 
+    let eDate = new Date(endDate.year, endDate.month, endDate.date, endDate.hour, endDate.min); 
+    
+    if(+sDate > +eDate) return false;
 
     return true;
 }
 
 const WriteViewContainer = () => {
     const dispatch = useDispatch();
-    const { form, title, body, startDay, startDate, endDay, endDate, calendar, calendarError, calendarId, labelStyle, labelText} = useSelector(({ calendar, write }) => ({
-        form: calendar.form,
-        title: write.title,
-        body: write.body,
+    const { startMonth, endMonth, startDay, startDate, endDay, endDate, setcalendar, calendar, calendarError, calendarId,} = useSelector(({ calendar, write }) => ({
+        startMonth: calendar.startMonth,
+        endMonth: calendar.endMonth,
         startDay: calendar.write.startDay,
         startDate: calendar.write.startDate,
         endDay: calendar.write.endDay,
         endDate: calendar.write.endDate,
-        calendar: write.calendar,
+        setcalendar: write.setcalendar, //수정 화면으로 성공 시
+        calendar: write.calendar, //업데이트 완료 시
         calendarError: write.calendarError,
         calendarId: write.calendarId,
-        labelStyle: write.label.style,
-        labelText: write.label.text,
     }));
+
+    //기본 상태값
+    const [title, setTitle] = useState('');
+    const [body, setBody] = useState('');
+    const [labelStyle, setLabelStyle] = useState('#f77878');
+    const [labelText, setLabelText] = useState('');
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const labels = [
+        {
+            id: 1,
+            name: 'red',
+            color: '#f77878',
+        },
+        {
+            id: 2,
+            name: 'blue',
+            color: '#9b9bfb',
+        },
+        {
+            id: 3,
+            name: 'green',
+            color: '#86f586',
+        },
+        {
+            id: 4,
+            name: 'orange',
+            color: '#ffc107',
+        },
+        {
+            id: 5,
+            name: 'gray',
+            color: '#dbdbdb',
+        },
+    ];
+
     const hoursArray = [];
     const minArray = [];
     for(let i=0; i < 61; i++){
@@ -103,34 +136,32 @@ const WriteViewContainer = () => {
     //INPUT과 TEXTAREA 핸들러
     const onInputChange = e => {
         const { value, name } = e.target;
-        dispatch(
-            changeInput({
-                key: name,
-                value
-            })
-        );
+        if(name === 'title') setTitle(value);
+        if(name === 'body') setBody(value);
+        if(name === 'label-text') setLabelText(value);
     };
 
     //등록 핸들러
     const onSubmit = useCallback(e => {
         e.preventDefault();
         const label = {
-            style: "#f2f2f2",
-            text: "중요한 일",
+            style: labelStyle,
+            text: labelText,
         }
         if(!checkDate({startDate, endDate})){
             alert('시작일이 종료일보다 큽니다...');
             return;
         }
-        if(!calendarId){ //수정
+        if(!calendarId){ //추가
             dispatch(writeCalendar({title, body, startDay, startDate, endDay, endDate, label}));
-        }else{//등록
+        }else{//수정
             dispatch(updateCalendar({calendarId, title, body, startDay, startDate, endDay, endDate, label}));
         }
-    },[body, calendarId, dispatch, endDate, endDay, startDate, startDay, title]);
+    },[body, calendarId, dispatch, endDate, endDay, labelStyle, labelText, startDate, startDay, title]);
+
     useEffect(() => {
         return () => {
-            dispatch(initialize());
+            dispatch(initialize()); //언마운트 시 초기화
         };
     },[dispatch]);
     
@@ -139,8 +170,7 @@ const WriteViewContainer = () => {
         if(!calendarId){
             //추가
             if(calendar){
-                const {viewYear, viewMonth} = form;
-                dispatch(listCalendar({viewYear, viewMonth}));
+                dispatch(listCalendar({startMonth, endMonth}));
                 dispatch(changeModal(false));
             }
             if(calendarError){
@@ -149,15 +179,20 @@ const WriteViewContainer = () => {
         }else{
             //수정
             if(calendar){
-                const {viewYear, viewMonth} = form;
-                dispatch(listCalendar({viewYear, viewMonth}));
+                dispatch(listCalendar({startMonth, endMonth}));
                 dispatch(changeModal({modalFlag:true, type:'view'}));//이전 팝업으로 백
             }
             if(calendarError){
                 console.log(calendarError);
             }
+
+            //수정 화면 입장 성공 시
+            setTitle(setcalendar.title);
+            setBody(setcalendar.body);
+            setLabelText(setcalendar.label.text);
+            setLabelStyle(setcalendar.label.style);
         }
-    },[calendar, calendarError, calendarId, dispatch, form]);
+    },[calendar, calendarError, calendarId, dispatch, setcalendar, startMonth, endMonth]);
  
     const write = {
         title,
@@ -168,15 +203,29 @@ const WriteViewContainer = () => {
         endDate,
         hoursArray: hoursArray,
         minArray: minArray,
-        labels: labelStyle,
-        labelStyle: labelStyle.filter(({flag}) => flag),
-        labelText: labelText,
+        labels,
+        labelStyle,
+        labelText,
     }
+
     const onStyleClick = useCallback(id => {
-    },[]);
+        let color = '';
+        labels.forEach((label) => {
+            if(label.id === id) color = label.color;
+        });
+        setLabelStyle(color);
+    },[labels]);
 
     return (
-       <WriteView onChange={onChange} write={write} onDateChange={onDateChange} onSubmit={onSubmit} onInputChange={onInputChange} calendarId={calendarId} onStyleClick={onStyleClick}/>
+       <WriteView 
+            onChange={onChange} 
+            write={write} 
+            onDateChange={onDateChange} 
+            onSubmit={onSubmit} 
+            onInputChange={onInputChange} 
+            calendarId={calendarId} 
+            onStyleClick={onStyleClick} 
+        />
     )
 };
 
