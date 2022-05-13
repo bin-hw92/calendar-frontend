@@ -28,16 +28,25 @@ const CalendarView = ({ calendars, onClick, User, viewYear, viewMonth, viewDate,
                             <span>{label.text}</span>
                             <div style={labelStyle}></div>
                         </li>
-                        <li className="title">
-                            <div className="title-font">{title}</div>
-                            <TimeItem startDate={startDate} endDate={endDate} key={_id} />
-                        </li>
-                        <li className="body">{body}</li>
                         {User?
                             User.username === user.username? (
-                            <li className="delete"></li>
+                            <>
+                                <li className="title">
+                                    <div className="title-font">{title}</div>
+                                    <TimeItem startDate={startDate} endDate={endDate} key={_id} />
+                                </li>
+                                <li className="body">{body}</li>
+                                <li className="delete"></li>
+                            </>
                         ): (
-                            <li className="delete-none"></li>
+                            <>
+                                <li className="title-none">
+                                    <div className="title-none-font">{title}</div>
+                                    <TimeItem startDate={startDate} endDate={endDate} key={_id} />
+                                </li>
+                                <li className="body">{body}</li>
+                                <li className="delete-none"></li>
+                            </>
                         ) : 
                         (<li className="delete-none"></li>)
                         }

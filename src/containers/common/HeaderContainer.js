@@ -15,7 +15,6 @@ const HeaderContainer = () => {
     }
 
     useEffect(() => {
-        console.log(user);
         if(!user){
             navigate('/'); //홈 화면으로 이동
         }

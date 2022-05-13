@@ -153,6 +153,7 @@
     padding: 2px 5px;
     color: #343a40;
     word-break: keep-all;
+    white-space: nowrap;
 }
 .calendar-todo-item-background {
     position: absolute;

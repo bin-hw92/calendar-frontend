@@ -128,12 +128,19 @@
     max-width: 515px;
     cursor: pointer;
 }
-.todo-list-item > .title > .title-font {
+.todo-list-item > .title-none {
+    position: relative;
+    width: 45%;
+    max-width: 515px;
+}
+.todo-list-item > .title > .title-font,
+.todo-list-item > .title-none > .title-none-font {
     font-size: 1.125rem;
     font-weight: bold;
     color: #333;
 }
-.todo-list-item > .title > .time {
+.todo-list-item > .title > .time,
+.todo-list-item > .title-none > .time {
     position: absolute;
     left: 0;
     bottom: -17px;
