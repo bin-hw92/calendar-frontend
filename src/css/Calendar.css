@@ -2,6 +2,29 @@
     margin-top: 3rem;
     margin-bottom: 10rem;
 }
+.calendar-top-header {
+    position: relative;
+    padding: 1.5rem 0;
+    border-bottom: 2px solid #333;
+}
+.calendar-top-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.calendar-top-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 0;
+}
+.back-button {
+    width: 35px;
+    height: 35px;
+    background: url('../images/back-icon.svg') no-repeat center;
+    background-size: 80% 80%;
+    background-color: #fff;
+    border: 1px solid #333;
+    border-radius: 3px;
+}
 .calendar-header {
     display: flex;
     position: relative;
@@ -17,7 +40,7 @@
 .left-arrow {
     width: 30px;
     height: 30px;
-    background: url('../images/arrow_icon.svg') no-repeat center;
+    background: url('../images/arrow-icon.svg') no-repeat center;
     background-size: 100% 100%;
     background-color: #fff;
     border: 1px solid #333;
@@ -26,7 +49,7 @@
 .right-arrow {
     width: 30px;
     height: 30px;
-    background: url('../images/arrow_icon.svg') no-repeat center;
+    background: url('../images/arrow-icon.svg') no-repeat center;
     background-size: 100% 100%;
     background-color: #fff;
     border: 1px solid #333;

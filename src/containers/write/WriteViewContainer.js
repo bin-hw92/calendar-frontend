@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import WriteView from "../../components/write/WriteView";
 import { changeModal, listCalendar,changeField, changeSubField } from "../../modules/calendar";
 import { initialize, updateCalendar, writeCalendar } from "../../modules/write";
+import { labels } from "../utils/labelStyle";
 
 const dateChangeFormat = ({date}) => {
     const nDate = new Date(date);
@@ -42,37 +43,9 @@ const WriteViewContainer = () => {
     //기본 상태값
     const [title, setTitle] = useState('');
     const [body, setBody] = useState('');
-    const [labelStyle, setLabelStyle] = useState('#f77878');
+    const [labelStyle, setLabelStyle] = useState('#f77878'); //기본은 빨강
     const [labelText, setLabelText] = useState('');
-    
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const labels = [
-        {
-            id: 1,
-            name: 'red',
-            color: '#f77878',
-        },
-        {
-            id: 2,
-            name: 'blue',
-            color: '#9b9bfb',
-        },
-        {
-            id: 3,
-            name: 'green',
-            color: '#86f586',
-        },
-        {
-            id: 4,
-            name: 'orange',
-            color: '#ffc107',
-        },
-        {
-            id: 5,
-            name: 'gray',
-            color: '#dbdbdb',
-        },
-    ];
+    const [error, setError] = useState(['','']);
 
     const hoursArray = [];
     const minArray = [];
@@ -148,8 +121,17 @@ const WriteViewContainer = () => {
             style: labelStyle,
             text: labelText,
         }
+        
+        if(title === ''){
+            setError(['title', '제목을 입력하세요.']);
+            return;
+        }
         if(!checkDate({startDate, endDate})){
-            alert('시작일이 종료일보다 큽니다...');
+            setError(['date', '시작일이 종료일보다 클 수 없습니다.']);
+            return;
+        }
+        if(labelText === ''){
+            setError(['label','라벨명을 입력하세요.']);
             return;
         }
         if(!calendarId){ //추가
@@ -171,7 +153,7 @@ const WriteViewContainer = () => {
             //추가
             if(calendar){
                 dispatch(listCalendar({startMonth, endMonth}));
-                dispatch(changeModal(false));
+                dispatch(changeModal({modalFlag:false, type:null}));
             }
             if(calendarError){
                 console.log(calendarError);
@@ -214,17 +196,18 @@ const WriteViewContainer = () => {
             if(label.id === id) color = label.color;
         });
         setLabelStyle(color);
-    },[labels]);
+    },[]);
 
     return (
        <WriteView 
             onChange={onChange} 
             write={write} 
+            error={error}
             onDateChange={onDateChange} 
             onSubmit={onSubmit} 
             onInputChange={onInputChange} 
             calendarId={calendarId} 
-            onStyleClick={onStyleClick} 
+            onStyleClick={onStyleClick}
         />
     )
 };

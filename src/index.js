@@ -11,6 +11,7 @@ import { rootSaga } from './modules/index';
 import { tempSetUser, check } from './modules/user';
 import { HelmetProvider } from 'react-helmet-async';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { tempSetTable } from './modules/tables';
 
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
@@ -30,8 +31,20 @@ function loadUser() {
   }
 }
 
+function loadTable() {
+  try{
+    const table = localStorage.getItem('tableCalendar'); //로컬 스토리지에서 user 조회
+    if(!table) return; // 캘린더 게시판 비밀번호 성공 상태가 아니면 안 함.
+
+    store.dispatch(tempSetTable(JSON.parse(table)));
+  }catch(e){
+    console.log('index localStorage is not working');
+  }
+}
+
 sagaMiddleware.run(rootSaga);
 loadUser();
+loadTable();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

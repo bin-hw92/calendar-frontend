@@ -10,10 +10,9 @@ import { unloadCalendar } from "../../modules/view";
 const AskModalContainer = ({children}) => {
     const [childrenForm, setChildrenForm] = useState([]);
     const dispatch = useDispatch();
-    const {modalFlag, type, calendarId} = useSelector(({ calendar, write, loading }) => ({
+    const {modalFlag, type} = useSelector(({ calendar }) => ({
         modalFlag: calendar.modalFlag,
         type: calendar.type,
-        calendarId: write.calendarId,
     }));
 
     const onClick = useCallback((e) => {
@@ -38,7 +37,8 @@ const AskModalContainer = ({children}) => {
     useEffect(() => {
         if(type === 'wrtie') setChildrenForm(children[0]);
         if(type === 'view') setChildrenForm(children[1]);
-    },[children, type]);
+        if(!modalFlag) setChildrenForm([]);
+    },[children, type, modalFlag]);
 
     return (
         (modalFlag && <AskModal onClick={onClick} children={childrenForm}/>)

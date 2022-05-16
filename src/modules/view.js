@@ -21,7 +21,7 @@ export function* calendarReadSaga() {
 }
 
 const initialState = {
-    calendar: [], //해당 일 할 일 목록
+    calendar: null, //해당 일 할 일 목록
     error: null,
     deleteFlag: false,
 };

@@ -75,7 +75,7 @@ const RegisterForm = () => {
 
     useEffect(() => {
         if(user){
-            navigate('/calendar'); //홈 화면으로 이동
+            navigate('/table'); //홈 화면으로 이동
             //로그인 유지
             try{
                 localStorage.setItem('user', JSON.stringify(user));

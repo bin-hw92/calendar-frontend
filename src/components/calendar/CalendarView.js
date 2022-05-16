@@ -18,42 +18,47 @@ const TimeItem = ({startDate, endDate}) => {
 }
 
 const CalendarView = ({ calendars, onClick, User, viewYear, viewMonth, viewDate, loading }) => {
+
     return (
         <div className="todo-list">
             <div className="todo-top-title">{viewYear}년{viewMonth}월{viewDate}일</div>
-            {calendars.map(({_id, title, body, startDate, endDate, label, user}) => {
-                const labelStyle = {'background': label.style};
-                return <ul className="todo-list-item" key={_id} onClick={(e) => onClick(e, _id)}>
-                        <li className="label">
-                            <span>{label.text}</span>
-                            <div style={labelStyle}></div>
-                        </li>
-                        {User?
-                            User.username === user.username? (
-                            <>
-                                <li className="title">
-                                    <div className="title-font">{title}</div>
-                                    <TimeItem startDate={startDate} endDate={endDate} key={_id} />
+            {loading && calendars === null? (<Loading />) :  
+                (<>
+                    {calendars !== null && calendars.map(({_id, title, body, startDate, endDate, label, user}) => {
+                        const labelStyle = {'background': label.style};
+                        return <ul className="todo-list-item" key={_id} onClick={(e) => onClick(e, _id)}>
+                                <li className="label">
+                                    <span>{label.text}</span>
+                                    <div style={labelStyle}></div>
                                 </li>
-                                <li className="body">{body}</li>
-                                <li className="delete"></li>
-                            </>
-                        ): (
-                            <>
-                                <li className="title-none">
-                                    <div className="title-none-font">{title}</div>
-                                    <TimeItem startDate={startDate} endDate={endDate} key={_id} />
-                                </li>
-                                <li className="body">{body}</li>
-                                <li className="delete-none"></li>
-                            </>
-                        ) : 
-                        (<li className="delete-none"></li>)
-                        }
-                    </ul>  
-                }
-            )}
-            {loading && !calendars.length && <Loading />}
+                                {User?
+                                    User.username === user.username? (
+                                    <>
+                                        <li className="title">
+                                            <div className="title-font">{title}</div>
+                                            <TimeItem startDate={startDate} endDate={endDate} key={_id} />
+                                        </li>
+                                        <li className="body">{body}</li>
+                                        <li className="delete"></li>
+                                    </>
+                                ): (
+                                    <>
+                                        <li className="title-none">
+                                            <div className="title-none-font">{title}</div>
+                                            <TimeItem startDate={startDate} endDate={endDate} key={_id} />
+                                        </li>
+                                        <li className="body">{body}</li>
+                                        <li className="delete-none"></li>
+                                    </>
+                                ) : 
+                                (<li className="delete-none"></li>)
+                                }
+                            </ul>  
+                        })}
+                    </>
+                )
+            }
+            
         </div>
     );
 };

@@ -4,6 +4,15 @@ import DatePicker from "react-datepicker";
 import "../../css/Todo.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/esm/locale";
+import styled from "styled-components";
+
+/* 에러를 보여줍니다. */
+const ErrorMessage = styled.div`
+    color: red;
+    text-align: center;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+`;
 
 const LabelItem = ({labels, labelStyle, onStyleClick }) => {
     return (
@@ -16,18 +25,20 @@ const LabelItem = ({labels, labelStyle, onStyleClick }) => {
     );
 };
 
-const WriteView = ({ write , onChange, onDateChange, onSubmit, onInputChange, calendarId, onStyleClick }) => {
-
+const WriteView = ({ write, error, onChange, onDateChange, onSubmit, onInputChange, calendarId, onStyleClick }) => {
     const { title, body, startDay, startDate, endDay, endDate, hoursArray, minArray, labels, labelStyle, labelText} = write;
     const sDate = new Date(startDay);
     const eDate = new Date(endDay);
+    const titlestyle = error[0] === 'title'?  {'border': '1px solid red'} : {};
+    const datestyle = error[0] === 'date'?  {'border': '1px solid red'} : {};
+    const labelstyle = error[0] === 'label'?  {'border': '1px solid red'} : {};
     
     return (
         <>
         <form onSubmit={onSubmit}>
             <ul>
                 <li className="todo-title">
-                    <Form.Control type="text" id="todo-title" name="title" placeholder="제목을 입력하세요" onChange={onInputChange} value={title}/>
+                    <Form.Control type="text" id="todo-title" name="title" placeholder="제목을 입력하세요" onChange={onInputChange} value={title} style={titlestyle} />
                 </li>
                 <li className="todo-date">
                     <div>
@@ -37,6 +48,9 @@ const WriteView = ({ write , onChange, onDateChange, onSubmit, onInputChange, ca
                             value={sDate}
                             selected={sDate}
                             dateFormat="yyyy.MM.dd"
+                            customInput={
+                                <Form.Control type="text" id="start-day" style={datestyle} disabled="true" />
+                            }
                         />
                         <Form.Select id="start-hours" value={startDate.hour} onChange={onChange} name="hour">
                             {hoursArray.map(hour => <option value={hour} key={hour}>{hour}시</option>)}
@@ -52,6 +66,10 @@ const WriteView = ({ write , onChange, onDateChange, onSubmit, onInputChange, ca
                             value={eDate}
                             selected={eDate}
                             dateFormat="yyyy.MM.dd"
+                            style={datestyle}
+                            customInput={
+                                <Form.Control type="text" id="end-day" style={datestyle} disabled="true" />
+                            }
                         />
                         <Form.Select id="end-hours" value={endDate.hour} onChange={onChange} name="hour">
                             {hoursArray.map(hour => <option value={hour} key={hour}>{hour}시</option>)}
@@ -67,13 +85,14 @@ const WriteView = ({ write , onChange, onDateChange, onSubmit, onInputChange, ca
                     </div>
                     <div>
                         <input type="hidden" name="label-style" value={labelStyle} />
-                        <Form.Control type="text" name="label-text" placeholder="라벨명을 입력하세요" onChange={onInputChange} value={labelText}/>
+                        <Form.Control type="text" name="label-text" placeholder="라벨명을 입력하세요" onChange={onInputChange} value={labelText} style={labelstyle} />
                     </div>
                 </li>
                 <li className="todo-text">
                     <Form.Control as="textarea" name="body" rows={5} onChange={onInputChange} value={body}/>
                 </li>
             </ul>
+            {error[0] && <ErrorMessage>{error[1]}</ErrorMessage>}
             <div className="todo-bottom">
                 {!calendarId? (
                     <>
