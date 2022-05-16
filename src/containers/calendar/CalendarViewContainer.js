@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CalendarView from "../../components/calendar/CalendarView";
 import { changeModal, listCalendar } from "../../modules/calendar";
-import { deleteCalendar, readCalendar } from "../../modules/view";
+import { deleteCalendar, readCalendar, unloadCalendar } from "../../modules/view";
 import { editCalendar } from "../../modules/write";
 
 function timeout(delay) { 
@@ -19,14 +19,9 @@ const CalendarViewContainer = () => {
         deleteFlag: view.deleteFlag,
         error: view.error,
         user: user.user,
-        
         loading: loading['view/READ_CALENDAR'],
     }));
     const {viewYear, viewMonth, viewDate} = form;
-
-    useEffect(() => {
-        dispatch(readCalendar(`${viewYear}.${viewMonth}.${viewDate}`));
-    },[deleteFlag, dispatch, viewDate, viewMonth, viewYear]);
 
     const onClick = useCallback(async (e, id) => {
         const eClassName = e.target.className;
@@ -44,6 +39,19 @@ const CalendarViewContainer = () => {
               }
         }
     },[dispatch, viewDate, viewMonth, viewYear, startMonth, endMonth]);
+
+    useEffect(() => {
+        dispatch(readCalendar(`${viewYear}.${viewMonth}.${viewDate}`));
+    },[deleteFlag, dispatch, viewDate, viewMonth, viewYear]);
+
+    useEffect(() => {
+       if(calendars !== null){
+           if(!calendars.length){
+                dispatch(changeModal({modalFlag:false, type:null}));
+                dispatch(unloadCalendar()); //해당 날짜 모든 할 일 삭제로 캘린더List null로 변경
+           }
+       } 
+    },[calendars, dispatch]);
 
     return (
         <CalendarView 

@@ -78,7 +78,6 @@ export const DayCalc = ({viewYear, viewMonth, calendarList, holidayList}) => {
         todoList.sort((a,b) => b.daysize-a.daysize);
 
         const holiday = holidayList.filter(holidays => holidays.locdate === parseInt( tDates[0]+tDates[1]+dates.date) ).length === 0? false : true;
-        console.log(holiday);
         nextDates.push({...dates, todoList, 'holiday': holiday});
     });
 

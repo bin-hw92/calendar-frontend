@@ -52,7 +52,7 @@ const ErrorMessage = styled.div`
     color: red;
     text-align: center;
     font-size: 0.875rem;
-    margi-top: 1rem;
+    margin-top: 1rem;
 `;
 
 const ButtonMarginTop = styled(Button)`
