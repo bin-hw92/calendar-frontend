@@ -14,6 +14,8 @@ const ErrorMessage = styled.div`
 const WriteTable = ({ table, error, onSubmit, onCancel, onChange }) => {
     const titleError = error[0] === 1 ?  {'border': '1px solid red'} : {};
     const passwordError = error[0] === 2 ?  {'border': '1px solid red'} : {};
+    const bodyError = error[0] === 3 ?  {'border': '1px solid red'} : {};
+
     return (
         <>
         <form className="table-write" onSubmit={onSubmit}>
@@ -25,7 +27,7 @@ const WriteTable = ({ table, error, onSubmit, onCancel, onChange }) => {
                     <Form.Control type="password" id="password" style={passwordError} name="password" placeholder="비밀번호를 입력하세요" onChange={onChange} value={table.password} />
                 </li>
                 <li className="table-text">
-                    <Form.Control as="textarea" name="body" rows={5} onChange={onChange} value={table.body} />
+                    <Form.Control as="textarea" name="body" rows={5} onChange={onChange} value={table.body} style={bodyError} />
                 </li>
             </ul>
             {error[0] > 0 && <ErrorMessage>{error[1]}</ErrorMessage>}

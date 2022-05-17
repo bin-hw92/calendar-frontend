@@ -17,3 +17,8 @@ export const check = ({id, password}) => {
 
 //캘린더에서 나가기 시 게시판 정보 삭제
 export const tableout = () => client.post('/api/tables/tableout');
+
+//글 삭제
+export const deleteTable = ({id}) => {
+    return client.delete(`/api/tables/${id}`);
+}

@@ -2,8 +2,8 @@ import { Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Loading from "../common/Loading";
 
-const TableList = ({tableList, loading, tableError, error, onClick}) => {
-    if(tableError){
+const TableList = ({tableList, user, loading, tableError, error, onClick, onKeyUp, onDelClick}) => {
+    if(tableError || user === null){
       return;
     }
     
@@ -22,9 +22,12 @@ const TableList = ({tableList, loading, tableError, error, onClick}) => {
               return(
                 <li key={table._id} className="table-list-item">
                     <div className="item-top">
-                      <div className="item-top-title">{table.title}</div>
+                      <div className="item-top-title">
+                          <div>{table.title}</div>
+                          {table.user.username === user.username && <div className="item-delete-button" onClick={() => onDelClick(table._id)}></div>}
+                      </div>
                       <div className="item-top-password">
-                        <Form.Control type="password" id={'password_'+table._id} data-id={table._id} name="password" placeholder="비밀번호" style={passwordError}/>
+                        <Form.Control type="password" id={'password_'+table._id} data-id={table._id} name="password" placeholder="비밀번호" style={passwordError} onKeyUp={onKeyUp}/>
                         <Button variant="outline-primary" onClick={() => onClick(table._id)}>입장</Button>
                       </div>
                     </div>
