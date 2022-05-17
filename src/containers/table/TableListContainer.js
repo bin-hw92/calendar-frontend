@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import TableList from "../../components/table/TableList";
-import { checkTable, listTable } from "../../modules/tables";
+import { checkTable, deleteTable, listTable } from "../../modules/tables";
 
 
 const TableListContainer = () => {
@@ -14,13 +14,14 @@ const TableListContainer = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
-    const { tableList, tableError, tableCalendar, checkError, loading } = useSelector(({tables, user, loading}) => ({
+    const { tableList, tableError, tableCalendar, checkError, loading, user, tableFlag } = useSelector(({tables, user, loading}) => ({
         tableList: tables.tableList,
         tableError: tables.tableError,
         loading: loading['table/LIST_TABLE'],
-        user: user.user,
         tableCalendar: tables.tableCalendar,
         checkError: tables.checkError,
+        user: user.user,
+        tableFlag: tables.tableFlag,
     }));
 
     useEffect(() => {
@@ -28,13 +29,39 @@ const TableListContainer = () => {
         const page = parseInt(searchParams.get('page'), 10) || 1;
         dispatch(listTable({page}));
     },[dispatch, searchParams]);
+    
+    useEffect(() => {
+        // 게시판 삭제 시 새로운 목록을 불러오기 위한 용
+       if(tableFlag){ 
+           const page = parseInt(searchParams.get('page'), 10) || 1;
+            dispatch(listTable({page}));
+        }
+    },[tableFlag]);
 
+    //비밀번호 입력 입장
     const onClick = useCallback(id => {
         const eValue = document.querySelector(`#password_${id}`).value;
         setTableId(id);
-        if(eValue.trim() === '') return setError([id, '비밀번호를 입력하세요.']);;
+        if(eValue.trim() === '') return setError([id, '비밀번호를 입력하세요.']);
         
         dispatch(checkTable({id, password: eValue}));
+    },[dispatch]);
+
+    //비밀번호 입력
+    const onKeyUp = useCallback(e => {
+        const id = e.target.id.split('_')[1];
+        if(e.key === 'Enter'){
+            setTableId(id);
+            if(e.target.value.trim() === '') return setError([id, '비밀번호를 입력하세요.']);
+            dispatch(checkTable({id, password: e.target.value.trim()}));
+        }
+    },[dispatch]);
+
+    //게시판 삭제
+    const onDelClick = useCallback(id => {
+        if (window.confirm("정말 삭제합니까?")) {
+            dispatch(deleteTable({id}));
+          }
     },[dispatch]);
 
     useEffect(() => {
@@ -58,10 +85,13 @@ const TableListContainer = () => {
     return (
         <TableList 
             tableList={tableList}
+            user={user}
             loading={loading}
             tableError={tableError}
             error={error}
             onClick={onClick}
+            onKeyUp={onKeyUp}
+            onDelClick={onDelClick}
         />
     )
 }

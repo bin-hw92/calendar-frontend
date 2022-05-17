@@ -12,6 +12,8 @@ const TABLE_OUT = 'table/TABLE_OUT'; //캘린더 나가기
 //글 등록 상태
 const [WRITE_TABLE, WRITE_TABLE_SUCCESS, WRITE_TABLE_FAILURE] = createRequestActionTypes('table/WRITE_TABLE'); //글 작성
 const [LIST_TABLE, LIST_TABLE_SUCCESS, LIST_TABLE_FAILURE] = createRequestActionTypes('table/LIST_TABLE'); //글 목록
+const [DELETE_TABLE, DELETE_TABLE_SUCCESS, DELETE_TABLE_FAILURE] = createRequestActionTypes('table/DELETE_TABLE'); //글 삭제
+
 //비밀번호 확인
 const [CHECK_TABLE, CHECK_TABLE_SUCCESS, CHECK_TABLE_FAILURE] = createRequestActionTypes('table/CHECK_TABLE');
 
@@ -44,10 +46,12 @@ export const writeTable = createAction(WRITE_TABLE, ({ title, password, body, us
 export const listTable = createAction(LIST_TABLE, ({ page }) => ({
     page
 }));
+export const deleteTable = createAction(DELETE_TABLE, ({id}) => ({id}));
 
 //사가 생성
 const writeTableSaga = createRequestSaga(WRITE_TABLE, tableAPI.writeTable);
 const listTableSage = createRequestSaga(LIST_TABLE, tableAPI.listTable);
+const deleteTableSage = createRequestSaga(DELETE_TABLE, tableAPI.deleteTable);
 const checkSaga = createRequestSaga(CHECK_TABLE, tableAPI.check);
 
 //캘린더 나가기 할 경우
@@ -74,6 +78,7 @@ export function* tablesSaga() {
     yield takeLatest(CHECK_TABLE, checkSaga);
     yield takeLatest(CHECK_TABLE_FAILURE, checkFailureSaga);
     yield takeLatest(TABLE_OUT, tableoutSaga);
+    yield takeLatest(DELETE_TABLE, deleteTableSage);
 }
 
 const initialState = {
@@ -92,12 +97,12 @@ const initialState = {
 };
 
 const tables = handleActions(
-    {
+    {   
+        [INITIALIZE] : state => initialState, // initialState를 넣으면 초기 상태로 바뀜
         [TEMP_SET_TABLE] : (state, { payload: tableCalendar }) => ({
             ...state,
             tableCalendar,
         }),
-        [INITIALIZE] : state => initialState, // initialState를 넣으면 초기 상태로 바뀜
         [CHANGE_FINELD] : (state, { payload: {form, key, value} }) => 
         produce(state, draft => {
              draft[form][key] = value; // 예: state.table.title를 바꾼다.
@@ -116,6 +121,7 @@ const tables = handleActions(
             ...state,
             tableList,
             lastPage: parseInt(response.headers['last-page'], 10), //문자열을 숫자열로 변환
+            tableFlag: false,
         }),
         [LIST_TABLE_FAILURE] : (state, { payload: tableError }) => ({
             ...state,
@@ -134,6 +140,14 @@ const tables = handleActions(
         [TABLE_OUT] : state => ({
             ...state,
             tableCalendar: null
+        }),
+        [DELETE_TABLE_SUCCESS] : (state) => ({
+            ...state,
+            tableFlag: true,
+        }),
+        [DELETE_TABLE_FAILURE] : (state, { payload: tableError }) => ({
+            ...state,
+            tableError
         }),
     },
     initialState,

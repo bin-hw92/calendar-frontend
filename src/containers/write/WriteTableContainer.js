@@ -41,6 +41,10 @@ const WriteTableContainer = () => {
             setError([2,'비밀번호를 입력하세요.']);
             return;
         }
+        if(body === ''){
+            setError([3,'설명을 입력하세요.']);
+            return;
+        }
         dispatch(writeTable({title, password, body, users}));
     };
 
@@ -55,8 +59,11 @@ const WriteTableContainer = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        if(tableFlag) navigate('/table');
-    },[navigate, tableFlag]);
+        if(tableFlag){
+            dispatch(initialize());
+            navigate('/table');
+        }
+    },[dispatch, navigate, tableFlag]);
 
     return (
         <WriteTable  
